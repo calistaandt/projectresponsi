@@ -1,15 +1,25 @@
 <?php 
 include "koneksi.php";
 
-if(isset($_POST["login"])){
+session_start(); // Start the session
+
+if (isset($_POST["login"])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $sql = "select * from pengguna where username= '$username' and password= '$password' ";
+    $sql = "SELECT * FROM pengguna WHERE username= '$username' AND password= '$password' ";
     $query = mysqli_query($conn, $sql);
-    if(mysqli_fetch_array($query) == true){
+    $hasil = mysqli_fetch_array($query);
+
+    if ($hasil) {
+        $_SESSION['id'] = $hasil['id'];
+        $_SESSION['nama'] = $hasil['nama'];
+        $_SESSION['username'] = $hasil['username'];
+        $_SESSION['bio'] = $hasil['bio'];
+
         header("Location: index.php");
-    }else{
+        exit();
+    } else {
         ?>
         <script>
             alert("Email atau Password Salah! Periksa Data kembali.");
