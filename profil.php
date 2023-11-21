@@ -1,74 +1,86 @@
 <?php 
-$upd= $_GET['upd'];
-$username= $_POST['username'];
-$password= $_POST['password'];
-$nama= $_POST['nama'];
-$bio= $_POST['bio'];
-$update= $_POST['upodate'];
+include "koneksi.php";
 
-if(isset($update)){
-    $sql= "update penggguna set username= '$username, password='$password', nama='$nama', bio='$bio' where username='$upd' ";
-    $query= mysqli_query($conn, $sql);
-    if($query){
-        ?>
-        <script>
-            alert("Data Berhasil Diubah");
-            document.location="profil.php";
-        </script>
-        <?php
+session_start();
+$id = $_SESSION["id"];
+$username = $_SESSION["username"];
+$nama = $_SESSION["nama"];
+$bio = $_SESSION["bio"];
+
+$query = "SELECT foto FROM pengguna WHERE id = $id";
+$result = mysqli_query($conn, $query);
+
+if ($result) {
+    $row = mysqli_fetch_assoc($result);
+    $foto = $row['foto'];
+    if (empty($foto)) {
+        $foto = 'images/profil.png';
     }
-}
-
-$sql= "select * from pengguna where username= '$upd'";
-$query= mysqli_query($conn, $sql);
-$hasil= mysqli_fetch_array($query);
-if($hasil['username'!=""]){
-    ?>
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Profil</title>
-    </head>
-    <body>
-        <center>
-        <form name="editprofil" method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
-            <table>
-                <tr>
-                    <td>Username</td>
-                    <td>:</td>
-                    <td>
-                        <input type="text" name="username" value="<?php echo $hasil['username']; ?>">
-                    </td>
-                </tr>
-                <tr>
-                    <td>Password</td>
-                    <td>:</td>
-                    <td>
-                        <input type="password" name="password" value="<?php echo $hasil['password']; ?>">
-                    </td>
-                </tr>
-                <tr>
-                    <td>Nama</td>
-                    <td>:</td>
-                    <td>
-                        <input type="text" name="nama" value="<?php echo $hasil['nama']; ?>">
-                    </td>
-                </tr>
-                <tr>
-                    <td>Bio</td>
-                    <td>:</td>
-                    <td>
-                        <input type="text" name="username" value="<?php echo $hasil['username']; ?>">
-                    </td>
-                </tr>
-            </table>
-        </form>
-        </center>
-    </body>
-    </html>
-    <?php
+} else {
+    $foto = 'images/profil.png';
 }
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Data</title>
+</head>
+<body>
+    <center>
+    <h1>PROFIL</h1>
+
+    <form name='formulir' method='post' action='<?php echo $_SERVER['PHP_SELF']; ?>'>
+        <table>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>
+                <img src='<?= $foto; ?>' alt="Profile Picture" width="100">
+                </td>
+            </tr>
+            <tr>
+                <td>ID</td>
+                <td>:</td>
+                <td>
+                    <input type='text' name='id' value='<?= $id; ?>' readonly>
+                </td>
+            </tr>
+            <tr>
+                <td>Nama</td>
+                <td>:</td>
+                <td>
+                    <input type='text' name='nama' value='<?= $nama; ?>' readonly>
+                </td>
+            </tr>
+            <tr>
+                <td>Username</td>
+                <td>:</td>
+                <td>
+                    <input type='text' name='username' value='<?= $username; ?>' readonly>
+                </td>
+            </tr>
+            <tr>
+                <td>Bio</td>
+                <td>:</td>
+                <td>
+                    <textarea name='bio' cols='30' rows='10' readonly><?= $bio; ?></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>
+                    <p>
+                        <a href="update_profil.php?upd=<?php echo $_SESSION['id']; ?>">Edit Profil</a><br>
+                        <a href="index.php">Kembali</a>
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </form>
+    </center>
+</body>
+</html>
