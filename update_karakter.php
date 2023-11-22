@@ -1,28 +1,34 @@
 <?php 
+session_start();
 include "koneksi.php";
 
-$upd= $_GET['upd'];
-$nama= $_POST['nama'];
-$gambar= $_POST['gambar'];
-$kelompok= $_POST['kelompok'];
-$deskripsi= $_POST['deskripsi'];
-$update= $_POST['update'];
+$upd = $_GET['upd'];
+$id_karakter = $_SESSION['id_karakter'];
+$nama_karakter = $_SESSION['nama_karakter']; 
+$deskripsi = $_SESSION['deskripsi'];
+$gambar = $_SESSION['gambar'];
+$id_kelompok = $_SESSION['id_kelompok'];
+$update = $_POST['update'];
 
-if(isset($update)){
-    $Sql= "update karakter set nama= '$nama', gambar='$gambar', kelompok= '$kelompok', deskripsi= '$deskripsi' ";
-    $query= mysqli_query($conn, $sql);
-    if($query){
+if (isset($update)) {
+    $sql = "UPDATE karakter SET nama_karakter='$nama_karakter', gambar='$gambar', deskripsi='$deskripsi', id_kelompok='$id_kelompok' WHERE id='$upd'";
+    $query = mysqli_query($conn, $sql);
+    
+    if ($query) {
         ?>
-		<script>alert('Data Berhasil Diubah!'); 
-        document.location='detail_karakter.php';</script>
-		<?php
+        <script>
+            alert('Data Berhasil Diubah!'); 
+            document.location='detail_karakter.php?det=<?php echo $upd; ?>';
+        </script>
+        <?php
     }
 }
 
-$sql= "select * from karakter where id= '$upd' ";
-$query= mysqli_query($conn, $sql);
-$hasil= mysqli_fetch_array($query);
-if($hasil['id']!= ""){
+$sql = "SELECT * FROM karakter WHERE id='$upd'";
+$query = mysqli_query($conn, $sql);
+$hasil = mysqli_fetch_array($query);
+
+if ($hasil['id'] != "") {
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -33,19 +39,31 @@ if($hasil['id']!= ""){
     </head>
     <body>
         <center>
-        <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" name="updchar" method="post">
-            <table>
-                <tr>
-                    <td>
-                        
-                    </td>
-                </tr>
-            </table>
+        <form action="<?php echo $_SERVER["PHP_SELF"] . "?upd=" . $upd; ?>" name="updchar" method="post">
+        <!-- Use the correct input name -->
+        <table>
+            <tr>
+                <td>Nama Karakter</td>
+                <td>:</td>
+                <td>
+                    <input type='text' name='nama_karakter' value='<?php echo $hasil['nama_karakter']; ?>'>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>
+                    <input type='submit' name='update' value='Update Data'>
+                    <br><p>
+                        <a href="data_pegawai.php">Batal</a>
+                    </p>
+                </td>
+            </tr>
+        </table>
         </form>
         </center>
     </body>
     </html>
     <?php
 }
-
 ?>

@@ -2,12 +2,11 @@
 include "koneksi.php";
 
 if(isset($_POST["insert"])){
-    $id = $_POST['id'];
-    $nama = $_POST['nama'];
+    $id_karakter = $_POST['id_karakter'];
+    $id_kelompok = $_POST['id_kelompok'];
+    $nama_karakter = $_POST['nama_karakter'];
     $gambar = $_FILES['gambar']['name'];
-
-    $kelompok = isset($_POST['kelompok']) ? $_POST['kelompok'] : '';
-
+    
     if($gambar != ""){
         $upload = "images/" . $gambar;
         move_uploaded_file($_FILES["gambar"]["tmp_name"], $upload);
@@ -15,7 +14,7 @@ if(isset($_POST["insert"])){
 
     $deskripsi = $_POST['deskripsi'];
 
-    $insert = "INSERT INTO karakter (id, nama, gambar, deskripsi, kelompok) VALUES ('$id', '$nama', '$upload', '$deskripsi', '$kelompok')";
+    $insert = "INSERT INTO karakter (id_karakter, nama_karakter, gambar, deskripsi, id_kelompok) VALUES ('$id_karakter', '$nama_karakter', '$upload', '$deskripsi', '$id_kelompok')";
     $query = mysqli_query($conn, $insert);
 
     if($query){
@@ -42,16 +41,18 @@ if(isset($_POST["insert"])){
         <table>
             <tr>
                 <td>
-                    <input type="radio" name="kelompok" value="Sith">Sith
-                    <input type="radio" name="kelompok" value="Jedi">Jedi
-                    <input type="radio" name="kelompok" value="Mandalorians">Mandalorians
-                    <input type="radio" name="kelompok" value="Resistance">Resistance
-                    <input type="radio" name="kelompok" value="Bounty Hunters">Bounty Hunters
-                    <input type="radio" name="kelompok" value="Wookiees">Wookiees
+                    <?php 
+                        $kelompok_query = "SELECT * FROM kelompok ORDER BY id_kelompok";
+                        $kelompok_result = mysqli_query($conn, $kelompok_query);
+
+                        while($row = mysqli_fetch_array($kelompok_result)){
+                            echo "<input type='radio' name='id_kelompok' value='$row[id_kelompok]'><img src='images/jedi.png' width='50px'> $row[id_kelompok] - $row[nama_kelompok] ";
+                        }
+                    ?>
                 </td>
             </tr>
             <tr>
-                <td>NAMA CHARACTER <br> <input type="text" name="nama"></td>
+                <td>NAMA CHARACTER <br> <input type="text" name="nama_karakter"></td>
             </tr>
             <tr>
                 <td>DESKRIPSI <br> <textarea name="deskripsi" id="deskripsi" cols="30" rows="10"></textarea></td>
