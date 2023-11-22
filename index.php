@@ -31,8 +31,9 @@ $query = mysqli_query($conn, $sql);
         }
         ?>
     </table>
-    <a href="insert_karakter.php">Tambah Karakter</a><br>
+    <a href="insert_karakter.php" <?php if($_SESSION["peran"]=="tamu"){echo "hidden";} ?>>Tambah</a><br>
     <a href="profil.php">Profil</a><br>
     <a href="logout.php">Logout</a>
+    
 </body>
 </html>

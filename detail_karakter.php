@@ -2,22 +2,22 @@
 session_start();
 include "koneksi.php";
 
+// Assuming you have id_karakter set in the session somewhere in your application
 $id_karakter = $_SESSION["id_karakter"];
-$id_kelompok = $_SESSION["id_kelompok"];
-$nama_karakter = $_SESSION["nama_karakter"];
-$deskripsi = $_SESSION["deskripsi"];
 
+// Check if 'det' parameter is set in the URL
 if (isset($_GET['det'])) {
-    $id_karakter = $_GET['det'];
-    $_SESSION['selected_karakter_id'] = $id_karakter;
-    $sql = "SELECT * FROM karakter WHERE id_karakter = $id_karakter";
+    $det_id_karakter = $_GET['det'];
+    $_SESSION['selected_karakter_id'] = $det_id_karakter;
+
+    // Retrieve character information from the database
+    $sql = "SELECT * FROM karakter WHERE id_karakter = $det_id_karakter";
     $query = mysqli_query($conn, $sql);
 
     if ($query && mysqli_num_rows($query) > 0) {
         $karacter = mysqli_fetch_array($query);
-        echo "<h1>" . $karacter['nama_karakter'] . "</h1>";
-        echo "<img src='" . $karacter['gambar'] . "' width='100px'>";
-        echo "<br><p> " . $karacter['deskripsi'] . "</p>";
+
+
     }
 }
 
@@ -32,23 +32,10 @@ if (isset($_GET["del"])) {
         ?>
         <script>
             alert("Data Berhasil Dihapus");
-            document.location= "index.php";
+            window.location.href = "index.php";
         </script>
         <?php
     }
-}
-
-$query = "SELECT gambar FROM karakter WHERE id_karakter = $id_karakter";
-$result = mysqli_query($conn, $query);
-
-if ($result) {
-    $row = mysqli_fetch_assoc($result);
-    $gambar = $row['gambar'];
-    if (empty($gambar)) {
-        $gambar = 'images/profil.png';
-    }
-} else {
-    $gambar = 'images/profil.png';
 }
 ?>
 
@@ -60,10 +47,15 @@ if ($result) {
     <title>Detail Karakter</title>
 </head>
 <body>
+    <?php 
+        echo "<h1>".$_SESSION['nama_karakter']."</h1>";
+        echo "<img src='" . $karacter['gambar'] . "' width='100px'>";
+        echo "<br><p> " . $_SESSION['deskripsi'] . "</p>";
+    ?>
     <p>
         <a href="index.php">Kembali</a>
     </p>
-    <p><a href="tes2.php?id_karakter=<?php echo $id_karakter; ?>">Edit</a></p>
+    <p><a href="tes2.php?id_karakter=<?php echo $det_id_karakter; ?>">Edit</a></p>
     <p>
         <a href="detail_karakter.php?del=<?= $id_karakter; ?>">Hapus</a>
     </p>

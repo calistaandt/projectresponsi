@@ -2,12 +2,8 @@
 include "koneksi.php";
 session_start();
 
-
-
-$id_karakter= $_GET["id_karakter"];
-$sql= "SELECT * FROM karakter WHERE id_karakter= $id_karakter";
-$query= mysqli_query($conn, $sql);
 if($_SERVER["REQUEST_METHOD"] == "POST"){
+    $id_karakter= $_POST["id_karakter"];
     $nama_karakter= $_POST["nama_karakter"];
     $deskripsi= $_POST["deskripsi"];
 
@@ -20,6 +16,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         echo "Error updating record: " . $conn->error;
     }
 }
+
+$id_karakter= $_GET["id_karakter"];
+$sql= "SELECT * FROM karakter WHERE id_karakter= $id_karakter";
+$query= mysqli_query($conn, $sql);
+
 if ($query->num_rows > 0) {
     $karakter = $query->fetch_assoc(); 
 } else {
@@ -42,6 +43,13 @@ if ($query->num_rows > 0) {
         <h1>Edit Karakter</h1>
         <form name="formulir" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
             <table>
+                <tr>
+                    <td>ID</td>
+                    <td>:</td>
+                    <td>
+                        <input type="text" name="id_karakter" value="<?php echo $karakter['id_karakter']; ?>" readonly>
+                    </td>
+                </tr>
                 <tr>
                     <td>Nama Karakter</td>
                     <td>:</td>
